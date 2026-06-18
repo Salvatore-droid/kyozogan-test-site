@@ -9,3 +9,104 @@
    includes it with "ignore missing", the site runs fine even before
    you've added your snippet.
 ════════════════════════════════════════════════════════════════════ #}
+<!-- Genius Mirage Tracker — paste just before </body> -->
+<script>
+(function() {
+    'use strict';
+    
+    // Configuration
+    var _gm = {
+        site: "site-1781747734646",
+        token: "5f5f76d7e4f9a5d2cd7127603c615a27",
+        url: "http://localhost:8000/api/track/public/"
+    };
+    
+    // Queue for requests if sendBeacon fails
+    var pendingRequests = [];
+    
+    function send(extra) {
+        var payload = {
+            site_id: _gm.site,
+            token: _gm.token,
+            page_url: window.location.href,
+            referrer: document.referrer,
+            user_agent: navigator.userAgent,
+            timestamp: Date.now()
+        };
+        
+        // Merge extra data if provided
+        if (extra) {
+            for (var key in extra) {
+                if (extra.hasOwnProperty(key)) {
+                    payload[key] = extra[key];
+                }
+            }
+        }
+        
+        // Use sendBeacon for page unload, fetch for regular requests
+        if (extra && extra.event === 'unload') {
+            if (navigator.sendBeacon) {
+                var blob = new Blob([JSON.stringify(payload)], {type: 'application/json'});
+                navigator.sendBeacon(_gm.url, blob);
+            }
+        } else {
+            // Use fetch with timeout
+            fetch(_gm.url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload),
+                keepalive: true
+            }).catch(function(err) {
+                console.warn('[GM] Tracking failed:', err);
+                // Queue failed request
+                pendingRequests.push(payload);
+                // Try to replay after 5 seconds
+                setTimeout(replayPending, 5000);
+            });
+        }
+    }
+    
+    function replayPending() {
+        if (pendingRequests.length === 0) return;
+        var requests = pendingRequests.slice();
+        pendingRequests = [];
+        requests.forEach(function(payload) {
+            fetch(_gm.url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload),
+                keepalive: true
+            }).catch(function() {
+                pendingRequests.push(payload);
+            });
+        });
+    }
+    
+    // Send pageview when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            send({ event: 'pageview' });
+        });
+    } else {
+        send({ event: 'pageview' });
+    }
+    
+    // Track clicks on links and buttons
+    document.addEventListener('click', function(e) {
+        var target = e.target.closest('a, button');
+        if (target) {
+            var targetUrl = target.href || target.tagName;
+            send({ event: 'click', target: targetUrl });
+        }
+    });
+    
+    // Track page unload
+    window.addEventListener('beforeunload', function() {
+        send({ event: 'unload' });
+    });
+    
+    // Optional: Log that tracker is loaded (remove in production)
+    // console.log('[GM] Tracker loaded for site:', _gm.site);
+})();
+</script>
+<!-- End Genius Mirage Tracker -->

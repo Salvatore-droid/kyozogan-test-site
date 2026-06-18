@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Portal — Northbridge</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body style="background:#1f3a5f; min-height:100vh; display:flex; align-items:center; justify-content:center;">
+  <div class="panel" style="max-width:380px; width:90%;">
+    <h1 style="margin-top:0; font-size:18px; text-align:center;">Northbridge Admin</h1>
+    {% if error %}<div class="alert alert-error">{{ error }}</div>{% endif %}
+    <form method="POST" action="/admin-portal">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password">
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%;">Sign In</button>
+    </form>
+  </div>
+</body>
+</html>

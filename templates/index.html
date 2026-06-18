@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Northbridge Office Supplies — Office Essentials Delivered{% endblock %}
+
+{% block content %}
+<div class="hero" style="margin: -30px -20px 30px; border-radius: 0;">
+  <h1>Everything your office needs, delivered.</h1>
+  <p>From printer paper to ergonomic chairs — Northbridge has been supplying local
+     businesses with reliable office essentials since 2014.</p>
+  <a href="/shop" class="btn">Browse the Shop</a>
+</div>
+
+<h2 class="section-title">Featured Products</h2>
+<div class="product-grid">
+  {% for p in products %}
+    <div class="product-card">
+      <div class="thumb">{{ p['category'] }}</div>
+      <div class="cat">{{ p['category'] }}</div>
+      <h3>{{ p['name'] }}</h3>
+      <div class="desc">{{ p['description'][:90] }}{% if p['description']|length > 90 %}…{% endif %}</div>
+      <div class="price">${{ '%.2f' % p['price'] }}</div>
+      {% if not p['in_stock'] %}<div class="out-of-stock">Out of Stock</div>{% endif %}
+      <a class="view" href="/product/{{ p['id'] }}">View details →</a>
+    </div>
+  {% endfor %}
+</div>
+
+<h2 class="section-title">Why Northbridge?</h2>
+<div class="product-grid">
+  <div class="panel">
+    <h3 style="margin-top:0;">Fast Local Delivery</h3>
+    <p class="muted">Most orders placed before 1pm are delivered the same working day within Nairobi.</p>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0;">Bulk Account Pricing</h3>
+    <p class="muted">Register a business account for volume discounts on stationery and furniture orders.</p>
+  </div>
+  <div class="panel">
+    <h3 style="margin-top:0;">Easy Reordering</h3>
+    <p class="muted">Your order history and invoices are always available from My Account.</p>
+  </div>
+</div>
+{% endblock %}

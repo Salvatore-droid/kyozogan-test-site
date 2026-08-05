@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{{ product['name'] if product else 'Product Not Found' }} — Northbridge{% endblock %}
+
+{% block content %}
+<div class="breadcrumb"><a href="/">Home</a> / <a href="/shop">Shop</a> / {{ product['name'] if product else 'Not Found' }}</div>
+
+{% if product %}
+<div class="panel" style="display:flex; gap:30px; flex-wrap:wrap;">
+  <div class="thumb" style="width:280px; height:200px; flex-shrink:0;">{{ product['category'] }}</div>
+  <div style="flex:1; min-width:240px;">
+    <div class="cat">{{ product['category'] }} &middot; SKU {{ product['sku'] }}</div>
+    <h1 style="margin:6px 0 10px;">{{ product['name'] }}</h1>
+    <div class="price" style="font-size:24px;">${{ '%.2f' % product['price'] }}</div>
+    <p class="muted" style="margin-top:14px;">{{ product['description'] }}</p>
+    {% if product['in_stock'] %}
+      <button class="btn-primary mt-2">Add to Cart</button>
+    {% else %}
+      <div class="out-of-stock mt-2">Currently Out of Stock</div>
+    {% endif %}
+  </div>
+</div>
+
+<h2 class="section-title">Customer Reviews</h2>
+<div class="panel">
+  {% if reviews %}
+    {% for r in reviews %}
+      <div class="review">
+        <div class="meta"><strong>{{ r['author'] }}</strong> &middot;
+          <span class="stars">{{ '★' * r['rating'] }}{{ '☆' * (5 - r['rating']) }}</span> &middot;
+          {{ r['created_at'] }}</div>
+        <div>{{ r['body'] }}</div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="muted">No reviews yet for this product.</p>
+  {% endif %}
+</div>
+{% else %}
+<div class="panel center">
+  <h2>Product Not Found</h2>
+  <p class="muted">We couldn't find a product matching that ID.</p>
+  <a href="/shop" class="btn-secondary mt-1">Back to Shop</a>
+</div>
+{% endif %}
+{% endblock %}

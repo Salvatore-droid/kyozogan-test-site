@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Shop — Northbridge Office Supplies{% endblock %}
+
+{% block content %}
+<div class="breadcrumb"><a href="/">Home</a> / Shop</div>
+<h1 class="section-title" style="margin-top:0;">
+  {% if category %}{{ category }}{% else %}All Products{% endif %}
+</h1>
+
+<div style="display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;">
+  <a href="/shop" class="btn-secondary" style="{{ 'background:#1f3a5f;color:#fff;' if not category }}">All</a>
+  {% for c in categories %}
+    <a href="/shop?category={{ c|urlencode }}" class="btn-secondary"
+       style="{{ 'background:#1f3a5f;color:#fff;' if category==c }}">{{ c }}</a>
+  {% endfor %}
+</div>
+
+{% if products %}
+<div class="product-grid">
+  {% for p in products %}
+    <div class="product-card">
+      <div class="thumb">{{ p['category'] }}</div>
+      <div class="cat">{{ p['category'] }}</div>
+      <h3>{{ p['name'] }}</h3>
+      <div class="desc">{{ p['description'][:90] }}{% if p['description']|length > 90 %}…{% endif %}</div>
+      <div class="price">${{ '%.2f' % p['price'] }}</div>
+      {% if not p['in_stock'] %}<div class="out-of-stock">Out of Stock</div>{% endif %}
+      <a class="view" href="/product/{{ p['id'] }}">View details →</a>
+    </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="muted">No products found in this category.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Management — Northbridge Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body style="background:#f4f6f9; min-height:100vh;">
+  <div style="max-width:900px; margin:0 auto; padding:32px 20px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+      <h1 style="margin:0; font-size:20px;">Northbridge Admin — Product Management</h1>
+      <a href="/" class="btn-secondary" style="font-size:12px; padding:8px 16px;">← Back to site</a>
+    </div>
+
+    {% if message %}
+      <div class="alert alert-{{ message_type or 'success' }}">{{ message }}</div>
+    {% endif %}
+
+    <div class="panel">
+      <h2 style="margin-top:0; font-size:15px;">Add Product</h2>
+      <form method="POST" action="/admin-portal/products/add">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="category">Category</label>
+            <input type="text" id="category" name="category" required>
+          </div>
+          <div class="form-group">
+            <label for="price">Price (USD)</label>
+            <input type="number" step="0.01" id="price" name="price" required>
+          </div>
+          <div class="form-group">
+            <label for="sku">SKU</label>
+            <input type="text" id="sku" name="sku" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description"></textarea>
+        </div>
+        <button type="submit" class="btn-primary">Add Product</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h2 style="margin-top:0; font-size:15px;">Catalog ({{ products|length }} items)</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>SKU</th><th>Stock</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in products %}
+          <tr>
+            <td>{{ p['id'] }}</td>
+            <td>{{ p['name'] }}</td>
+            <td>{{ p['category'] }}</td>
+            <td>${{ '%.2f' % p['price'] }}</td>
+            <td>{{ p['sku'] }}</td>
+            <td>{{ 'In stock' if p['in_stock'] else 'Out of stock' }}</td>
+            <td>
+              <form method="POST" action="/admin-portal/products/{{ p['id'] }}/delete"
+                    onsubmit="return confirm('Delete {{ p['name']|e }}?');" style="display:inline;">
+                <button type="submit" class="btn-secondary" style="color:#c0392b; border-color:#c0392b; padding:5px 12px; font-size:12px;">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

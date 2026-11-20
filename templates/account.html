@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}My Account — Northbridge{% endblock %}
+
+{% block content %}
+<div class="breadcrumb"><a href="/">Home</a> / My Account</div>
+<h1 class="section-title" style="margin-top:0;">Welcome back, {{ user['full_name'] }}</h1>
+
+<div class="panel">
+  <h2 style="margin-top:0; font-size:16px;">Account Details</h2>
+  <p class="muted">Username: <strong>{{ user['username'] }}</strong><br>
+     Email: <strong>{{ user['email'] }}</strong></p>
+</div>
+
+<div class="panel">
+  <h2 style="margin-top:0; font-size:16px;">Your Recent Orders</h2>
+  {% if invoices %}
+  <table class="data-table">
+    <thead>
+      <tr><th>Order Ref</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for inv in invoices %}
+      <tr>
+        <td>{{ inv['order_ref'] }}</td>
+        <td>{{ inv['created_at'] }}</td>
+        <td>${{ '%.2f' % inv['total'] }}</td>
+        <td><span class="status-badge status-{{ inv['status'] }}">{{ inv['status'] }}</span></td>
+        <td><a href="/account/invoice/{{ inv['id'] }}">View Invoice</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">You have no orders yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

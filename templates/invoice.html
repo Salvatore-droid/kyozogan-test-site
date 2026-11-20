@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Invoice {{ invoice['order_ref'] if invoice else '' }} — Northbridge{% endblock %}
+
+{% block content %}
+<div class="breadcrumb"><a href="/">Home</a> / <a href="/account">My Account</a> / Invoice</div>
+
+{% if invoice %}
+<div class="panel" style="max-width:560px;">
+  <h1 style="margin-top:0; font-size:18px;">Invoice {{ invoice['order_ref'] }}</h1>
+  <p class="muted small">Issued {{ invoice['created_at'] }}</p>
+  <table class="data-table mt-1">
+    <tr><th>Items</th><td>{{ invoice['items'] }}</td></tr>
+    <tr><th>Total</th><td>${{ '%.2f' % invoice['total'] }}</td></tr>
+    <tr><th>Status</th><td><span class="status-badge status-{{ invoice['status'] }}">{{ invoice['status'] }}</span></td></tr>
+  </table>
+</div>
+{% else %}
+<div class="panel center">
+  <h2>Invoice Not Found</h2>
+  <p class="muted">No invoice exists with that reference, or you don't have permission to view it.</p>
+  <a href="/account" class="btn-secondary mt-1">Back to Account</a>
+</div>
+{% endif %}
+{% endblock %}

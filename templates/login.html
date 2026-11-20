@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Login — Northbridge{% endblock %}
+
+{% block content %}
+<div class="breadcrumb"><a href="/">Home</a> / Login</div>
+
+<div class="panel" style="max-width:420px; margin:0 auto;">
+  <h1 style="margin-top:0; font-size:22px;">Account Login</h1>
+  <p class="muted small">Demo customer account: <strong>demo</strong> / <strong>Demo1234!</strong></p>
+
+  {% if error %}<div class="alert alert-error">{{ error }}</div>{% endif %}
+
+  <form method="POST" action="/login">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="current-password">
+    </div>
+    <button type="submit" class="btn-primary" style="width:100%;">Login</button>
+  </form>
+  <p class="small mt-1"><a href="/forgot-password">Forgot password?</a></p>
+</div>
+{% endblock %}

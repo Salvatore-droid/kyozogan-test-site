@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Store Tools — Northbridge{% endblock %}
+
+{% block content %}
+<div class="breadcrumb"><a href="/">Home</a> / Store Tools</div>
+<h1 class="section-title" style="margin-top:0;">Store Tools</h1>
+<p class="muted">A few small self-service tools for our customers.</p>
+
+<div class="tool-box">
+  <h3>Delivery Status Lookup</h3>
+  <p class="hint">Enter your order reference (e.g. ORD-100231) to check delivery status.</p>
+  <form method="POST" action="/support/tools/track">
+    <div class="form-group" style="max-width:320px;">
+      <input type="text" name="order_ref" placeholder="ORD-100231" value="{{ track_input or '' }}">
+    </div>
+    <button type="submit" class="btn-primary">Check Status</button>
+  </form>
+  {% if track_output %}
+  <div class="tool-output">{{ track_output }}</div>
+  {% endif %}
+</div>
+
+<div class="tool-box">
+  <h3>Catalog PDF Generator</h3>
+  <p class="hint">Generate a quick preview note for a given product name before downloading the full catalog.</p>
+  <form method="POST" action="/support/tools/preview">
+    <div class="form-group" style="max-width:320px;">
+      <input type="text" name="product_name" placeholder="e.g. Office Chair" value="{{ preview_input or '' }}">
+    </div>
+    <button type="submit" class="btn-primary">Generate Preview</button>
+  </form>
+  {% if preview_output %}
+  <div class="tool-output">{{ preview_output | safe }}</div>
+  {% endif %}
+</div>
+
+<div class="tool-box">
+  <h3>Catalog Download</h3>
+  <p class="hint">Download our latest product brochure (PDF).</p>
+  <form method="GET" action="/download">
+    <input type="hidden" name="file" value="catalog.pdf">
+    <button type="submit" class="btn-secondary">Download catalog.pdf</button>
+  </form>
+</div>
+{% endblock %}
